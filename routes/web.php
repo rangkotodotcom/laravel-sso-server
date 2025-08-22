@@ -14,8 +14,10 @@ use App\Http\Controllers\ProfileController;
 // Route::get('/auth/logout', [AuthController::class, 'logout'])->name('logout');
 // Route::get('/auth/register', [AuthController::class, 'register'])->name('register')->middleware('guest');
 // Route::get('/auth/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgotpassword');
-Route::get('/auth/google', [GoogleController::class, 'redirect'])->name('login.google');
-Route::get('/auth/microsoft', [MicrosoftController::class, 'redirect'])->name('login.microsoft');
+Route::get('/google/login', [GoogleController::class, 'redirect'])->name('login.google');
+Route::get('/microsoft/login', [MicrosoftController::class, 'redirect'])->name('login.microsoft');
+Route::get('/google/register', [GoogleController::class, 'redirect'])->name('register.google');
+Route::get('/microsoft/register', [MicrosoftController::class, 'redirect'])->name('register.microsoft');
 
 Route::get('/auth/personal', [AuthController::class, 'personal']);
 Route::get('/docs/oauth', [DocsController::class, 'oauth']);

@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layout.home.main')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Profile</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+@section('title', 'Profile')
 
-<body class="bg-gray-100 min-h-screen text-gray-800 dark:bg-gray-900 dark:text-gray-100 p-6">
 
+@section('container')
     <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded shadow p-6 space-y-6">
 
         <h1 class="text-3xl font-bold mb-4">Profile Information</h1>
@@ -158,7 +152,9 @@
         </form>
 
     </div>
+@endsection
 
+@push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             @if (!auth()->user()->two_factor_confirmed_at && auth()->user()->two_factor_secret)
@@ -207,8 +203,4 @@
             @endif
         });
     </script>
-
-
-</body>
-
-</html>
+@endpush
