@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Register</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -15,17 +15,16 @@
 
 <body
     class="bg-white text-gray-800 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center p-6">
-    <div class="max-w-md w-full space-y-6" role="main" aria-label="Halaman login">
+    <div class="max-w-md w-full space-y-6" role="main" aria-label="Halaman register">
         <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow space-y-6">
             <!-- Heading -->
             <div class="text-center">
-                <div class="text-blue-500 text-5xl mb-3">🔑</div>
-                <h1 class="text-2xl font-bold">Login to Your Account</h1>
+                <div class="text-green-500 text-5xl mb-3">📝</div>
+                <h1 class="text-2xl font-bold">Buat Akun Baru</h1>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Silahkan masuk untuk melanjutkan
+                    Silakan isi formulir untuk mendaftar
                 </p>
             </div>
-
 
             {{-- @if (session('failed'))
                 <div class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-sm rounded px-4 py-3">
@@ -33,14 +32,24 @@
                 </div>
             @endif --}}
 
-            <form method="POST" action="{{ route('login.store') }}" class="space-y-4">
+            <form method="POST" action="{{ route('register.store') }}" class="space-y-4">
                 @csrf
+
+                <!-- Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium mb-1">Nama Lengkap</label>
+                    <input type="text" name="name" id="name" value="{{ old('name') }}"
+                        class="w-full px-4 py-2 rounded border @error('name') border-red-500 dark:border-red-400 @else border-gray-300 dark:border-gray-700 @enderror bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
+                    @error('name')
+                        <p class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 <!-- Email -->
                 <div>
                     <label for="email" class="block text-sm font-medium mb-1">Alamat Email</label>
                     <input type="text" name="email" id="email" value="{{ old('email') }}"
-                        class="w-full px-4 py-2 rounded border @error('email') border-red-500 dark:border-red-400 @else border-gray-300 dark:border-gray-700 @enderror bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        class="w-full px-4 py-2 rounded border @error('email') border-red-500 dark:border-red-400 @else border-gray-300 dark:border-gray-700 @enderror bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
                     @error('email')
                         <p class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -50,35 +59,32 @@
                 <div>
                     <label for="password" class="block text-sm font-medium mb-1">Kata Sandi</label>
                     <input type="password" name="password" id="password"
-                        class="w-full px-4 py-2 rounded border @error('password') border-red-500 dark:border-red-400 @else border-gray-300 dark:border-gray-700 @enderror bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        class="w-full px-4 py-2 rounded border @error('password') border-red-500 dark:border-red-400 @else border-gray-300 dark:border-gray-700 @enderror bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
                     @error('password')
                         <p class="text-red-600 dark:text-red-400 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- Remember Me -->
-                <div class="flex items-center justify-between text-sm">
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" name="remember"
-                            class="rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-blue-600 focus:ring-blue-500"
-                            {{ old('remember') ? 'checked' : '' }} />
-                        Remember me
-                    </label>
-                    <a href="{{ route('password.request') }}" class="text-blue-600 hover:underline">Forgot Password?</a>
+                <!-- Confirm Password -->
+                <div>
+                    <label for="password_confirmation" class="block text-sm font-medium mb-1">Konfirmasi Kata
+                        Sandi</label>
+                    <input type="password" name="password_confirmation" id="password_confirmation"
+                        class="w-full px-4 py-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
                 </div>
 
                 <!-- Submit -->
                 <button type="submit"
                     class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded transition">
-                    Login
+                    Daftar
                 </button>
 
-                <!-- Social Login -->
+                <!-- Social Register -->
                 <div class="mt-6 space-y-4">
-                    <p class="text-center text-gray-500 dark:text-gray-400">Atau masuk dengan</p>
+                    <p class="text-center text-gray-500 dark:text-gray-400">Atau daftar dengan</p>
 
                     <div class="flex flex-col gap-3">
-                        <!-- Google Login -->
+                        <!-- Google Register -->
                         <a href="{{ route('login.google') }}"
                             class="w-full flex items-center justify-center gap-3 py-2 rounded text-white font-semibold bg-red-600 hover:bg-red-700 transition">
                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -91,10 +97,12 @@
                                 <path fill="#FBBC05"
                                     d="M12 4.77c1.757 0 3.335.603 4.58 1.784l3.44-3.44C17.96 1.36 15.24 0 12 0 7.29 0 3.126 2.54 1.153 6.62l4.035 3.16c.958-2.882 3.645-5.01 6.812-5.01z" />
                             </svg>
-                            <span class="text-gray-700 dark:text-gray-300 font-semibold">Login dengan Google</span>
+                            <span class="text-gray-700 dark:text-gray-300 font-semibold">
+                                Register dengan Google
+                            </span>
                         </a>
 
-                        <!-- Microsoft Login -->
+                        <!-- Microsoft Register -->
                         <a href="{{ route('login.microsoft') }}"
                             class="w-full flex items-center justify-center gap-3 py-2 rounded text-white font-semibold bg-blue-700 hover:bg-blue-800 transition">
                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,16 +111,18 @@
                                 <rect x="1" y="13" width="10" height="10" fill="#05A6F0" />
                                 <rect x="13" y="13" width="10" height="10" fill="#FFBA08" />
                             </svg>
-                            <span class="text-gray-700 dark:text-gray-300 font-semibold">Login dengan Microsoft</span>
+                            <span class="text-gray-700 dark:text-gray-300 font-semibold">
+                                Register dengan Microsoft
+                            </span>
                         </a>
                     </div>
                 </div>
             </form>
 
-            <!-- Register -->
+            <!-- Login -->
             <div class="text-center text-sm text-gray-500 dark:text-gray-400">
-                Belum punya akun?
-                <a href="{{ route('register') }}" class="text-blue-600 hover:underline">Daftar sekarang</a>
+                Sudah punya akun?
+                <a href="{{ route('login') }}" class="text-blue-600 hover:underline">Masuk di sini</a>
             </div>
         </div>
 
