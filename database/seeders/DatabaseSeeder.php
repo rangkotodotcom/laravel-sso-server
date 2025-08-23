@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
+            'user_group_id' => '01k3bj4qx8m1wjp8chj17ehe2m',
             'name' => 'Test User',
             'email' => 'test@example.com',
             'password' => '12345678'

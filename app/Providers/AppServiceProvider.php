@@ -38,6 +38,23 @@ class AppServiceProvider extends ServiceProvider
         Passport::refreshTokensExpireIn(CarbonInterval::days(14));
         Passport::personalAccessTokensExpireIn(CarbonInterval::months(1));
 
+        Passport::tokensCan([
+            'email' => 'Email',
+            'profile' => 'Profile',
+            'read-profile' => 'Read user profile',
+            'update-profile' => 'Update user profile',
+            'view-products' => 'View product listings',
+            'manage-products' => 'Create, update, delete products',
+            'view-orders' => 'View orders',
+            'manage-orders' => 'Manage all orders',
+            'admin' => 'Full access to administrative features',
+        ]);
+
+        Passport::defaultScopes([
+            'email',
+            'profile',
+        ]);
+
 
         RateLimiter::for('api', function (Request $request) {
             $cookieId = $request->user()
