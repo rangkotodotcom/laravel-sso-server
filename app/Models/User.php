@@ -24,6 +24,8 @@ class User extends Authenticatable implements OAuthenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'google_id',
+        'microsoft_id',
         'name',
         'email',
         'password',

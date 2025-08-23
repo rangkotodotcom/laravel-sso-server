@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUlid('user_group_id')->index()->references('id')->on('user_groups')->restrictOnUpdate()->restrictOnDelete();
+            $table->string('google_id')->nullable();
+            $table->string('microsoft_id')->nullable();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

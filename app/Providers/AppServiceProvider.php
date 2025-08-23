@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Laravel\Passport\Passport;
 use Carbon\CarbonInterval;
+use Illuminate\Http\Request;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use SocialiteProviders\Manager\SocialiteWasCalled;
@@ -34,6 +37,27 @@ class AppServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(CarbonInterval::days(7));
         Passport::refreshTokensExpireIn(CarbonInterval::days(14));
         Passport::personalAccessTokensExpireIn(CarbonInterval::months(1));
+
+
+        RateLimiter::for('api', function (Request $request) {
+            $cookieId = $request->user()
+                ? 'api_' . $request->user()->id
+                : 'api_' . ($request->cookie('x-client-id') ?? $request->ip());
+
+            return $request->user()
+                ? Limit::perMinute(120)->by($cookieId)
+                : Limit::perMinute(240)->by($cookieId);
+        });
+
+        RateLimiter::for('attachment', function (Request $request) {
+            $cookieId = $request->user()
+                ? 'attachment_' . $request->user()->id
+                : 'attachment_' . ($request->cookie('x-client-id') ?? $request->ip());
+
+            return $request->user()
+                ? Limit::perMinute(240)->by($cookieId)
+                : Limit::perMinute(480)->by($cookieId);
+        });
 
 
         Event::listen(function (SocialiteWasCalled $event) {
