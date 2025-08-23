@@ -23,7 +23,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'user'])->default('user');
             $table->boolean('active')->default(true);
             $table->string('photo_name')->nullable();
-            $table->text('photo_url')->nullable();
+            $table->text('photo_path')->nullable();
             $table->string('created_by');
             $table->string('updated_by')->nullable();
             $table->string('deleted_by')->nullable();
