@@ -13,14 +13,22 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUlid('user_group_id')->index()->references('id')->on('user_groups')->restrictOnUpdate()->restrictOnDelete();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('type')->nullable();
-            $table->string('role')->nullable();
+            $table->enum('role', ['admin', 'user'])->default('user');
+            $table->boolean('active')->default(true);
+            $table->string('photo_name')->nullable();
+            $table->text('photo_url')->nullable();
+            $table->string('created_by');
+            $table->string('updated_by')->nullable();
+            $table->string('deleted_by')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+            $table->index(['email', 'active', 'deleted_at']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

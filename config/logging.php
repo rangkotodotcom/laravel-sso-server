@@ -1,9 +1,19 @@
 <?php
 
+use Illuminate\Support\Str;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
+
+$creator = 'rangkoto';
+$appname = 'ssoserver';
+$path = base_path('logs');
+$year = date('Y');
+$month = date('m');
+$day = date('d');
+$filename = Str::slug(Str::lower(env('APP_NAME')));
 
 return [
 
@@ -53,78 +63,130 @@ return [
     'channels' => [
 
         'stack' => [
-            'driver' => 'stack',
-            'channels' => explode(',', (string) env('LOG_STACK', 'single')),
+            'driver'            => 'stack',
+            'channels'          => explode(',', env('LOG_STACK', 'single')),
             'ignore_exceptions' => false,
         ],
 
         'single' => [
-            'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
-            'replace_placeholders' => true,
+            'driver'                => 'single',
+            'path'                  => "{$path}/{$year}/{$month}/single/{$filename}-{$year}-{$month}-{$day}.log",
+            'level'                 => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders'  => true,
         ],
 
         'daily' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/laravel.log'),
-            'level' => env('LOG_LEVEL', 'debug'),
-            'days' => env('LOG_DAILY_DAYS', 14),
-            'replace_placeholders' => true,
+            'driver'                => 'daily',
+            'path'                  => "{$path}/{$year}/{$month}/daily/{$filename}.log",
+            'level'                 => env('LOG_LEVEL', 'debug'),
+            'days'                  => env('LOG_DAILY_DAYS', 14),
+            'replace_placeholders'  => true,
         ],
 
         'slack' => [
-            'driver' => 'slack',
-            'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
-            'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
-            'level' => env('LOG_LEVEL', 'critical'),
-            'replace_placeholders' => true,
+            'driver'                => 'slack',
+            'url'                   => env('LOG_SLACK_WEBHOOK_URL'),
+            'username'              => env('LOG_SLACK_USERNAME', 'Laravel Log'),
+            'emoji'                 => env('LOG_SLACK_EMOJI', ':boom:'),
+            'level'                 => env('LOG_LEVEL', 'critical'),
+            'replace_placeholders'  => true,
         ],
 
         'papertrail' => [
-            'driver' => 'monolog',
-            'level' => env('LOG_LEVEL', 'debug'),
-            'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
-            'handler_with' => [
-                'host' => env('PAPERTRAIL_URL'),
-                'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+            'driver'        => 'monolog',
+            'level'         => env('LOG_LEVEL', 'debug'),
+            'handler'       => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
+            'handler_with'  => [
+                'host'              => env('PAPERTRAIL_URL'),
+                'port'              => env('PAPERTRAIL_PORT'),
+                'connectionString'  => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
-            'processors' => [PsrLogMessageProcessor::class],
+            'processors'    => [PsrLogMessageProcessor::class],
         ],
 
         'stderr' => [
-            'driver' => 'monolog',
-            'level' => env('LOG_LEVEL', 'debug'),
-            'handler' => StreamHandler::class,
-            'handler_with' => [
-                'stream' => 'php://stderr',
-            ],
+            'driver'    => 'monolog',
+            'level'     => env('LOG_LEVEL', 'debug'),
+            'handler'   => StreamHandler::class,
             'formatter' => env('LOG_STDERR_FORMATTER'),
-            'processors' => [PsrLogMessageProcessor::class],
+            'with'      => [
+                'stream'    => 'php://stderr',
+            ],
+            'processors'    => [PsrLogMessageProcessor::class],
         ],
 
         'syslog' => [
-            'driver' => 'syslog',
-            'level' => env('LOG_LEVEL', 'debug'),
-            'facility' => env('LOG_SYSLOG_FACILITY', LOG_USER),
-            'replace_placeholders' => true,
+            'driver'                => 'syslog',
+            'level'                 => env('LOG_LEVEL', 'debug'),
+            'facility'              => env('LOG_SYSLOG_FACILITY', LOG_USER),
+            'replace_placeholders'  => true,
         ],
 
         'errorlog' => [
-            'driver' => 'errorlog',
-            'level' => env('LOG_LEVEL', 'debug'),
-            'replace_placeholders' => true,
+            'driver'                => 'errorlog',
+            'level'                 => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders'  => true,
         ],
 
         'null' => [
-            'driver' => 'monolog',
-            'handler' => NullHandler::class,
+            'driver'    => 'monolog',
+            'handler'   => NullHandler::class,
         ],
 
         'emergency' => [
-            'path' => storage_path('logs/laravel.log'),
+            'path' => "{$path}/{$year}/{$month}/emergency/{$filename}-{$year}-{$month}-{$day}.log",
+        ],
+
+        'error' => [
+            'driver'            => 'monolog',
+            'level'             => env('LOG_LEVEL', 'debug'),
+            'handler'           => StreamHandler::class,
+            'handler_with'      => [
+                'stream'            => "{$path}/{$year}/{$month}/error/{$filename}-{$year}-{$month}-{$day}.log",
+            ],
+            'formatter'         => LineFormatter::class,
+            'formatter_with'    => [
+                'format'            => "[%datetime%] %channel%.%level_name%: %message% %context%\n\n",
+            ],
+        ],
+
+        'api' => [
+            'driver'            => 'monolog',
+            'level'             => env('LOG_LEVEL', 'debug'),
+            'handler'           => StreamHandler::class,
+            'handler_with'      => [
+                'stream'            => "{$path}/{$year}/{$month}/api/{$filename}-{$year}-{$month}-{$day}.log",
+            ],
+            'formatter'         => LineFormatter::class,
+            'formatter_with'    => [
+                'format'            => "[%datetime%] %channel%.%level_name%: %message% %context%\n\n",
+            ],
+        ],
+
+        'web' => [
+            'driver'            => 'monolog',
+            'level'             => env('LOG_LEVEL', 'debug'),
+            'handler'           => StreamHandler::class,
+            'handler_with'      => [
+                'stream'            => "{$path}/{$year}/{$month}/web/{$filename}-{$year}-{$month}-{$day}.log",
+            ],
+            'formatter'         => LineFormatter::class,
+            'formatter_with'    => [
+                'format'            => "[%datetime%] %channel%.%level_name%: %message% %context%\n\n",
+            ],
+        ],
+
+        'client' => [
+            'driver'            => 'monolog',
+            'level'             => env('LOG_LEVEL', 'debug'),
+            'handler'           => StreamHandler::class,
+            'handler_with'      => [
+                'stream'            => "{$path}/{$year}/{$month}/client/{$filename}-{$year}-{$month}-{$day}.log",
+            ],
+            'formatter'         => LineFormatter::class,
+            'formatter_with'    => [
+                'format'            => "[%datetime%] %channel%.%level_name%: %message% %context%\n\n",
+            ],
         ],
 
     ],

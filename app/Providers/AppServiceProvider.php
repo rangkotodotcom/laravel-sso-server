@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
-// use Inertia\Inertia;
 use Laravel\Passport\Passport;
 use Carbon\CarbonInterval;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use SocialiteProviders\Manager\SocialiteWasCalled;
+use SocialiteProviders\Google\Provider as GoogleProvider;
+use SocialiteProviders\Azure\Provider as AzureProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,15 +36,9 @@ class AppServiceProvider extends ServiceProvider
         Passport::personalAccessTokensExpireIn(CarbonInterval::months(1));
 
 
-
-        // Passport::authorizationView(
-        //     fn ($parameters) => Inertia::render('Auth/OAuth/Authorize', [
-        //         'request' => $parameters['request'],
-        //         'authToken' => $parameters['authToken'],
-        //         'client' => $parameters['client'],
-        //         'user' => $parameters['user'],
-        //         'scopes' => $parameters['scopes'],
-        //     ])
-        // );
+        Event::listen(function (SocialiteWasCalled $event) {
+            $event->extendSocialite('google', GoogleProvider::class);
+            $event->extendSocialite('azure', AzureProvider::class);
+        });
     }
 }
