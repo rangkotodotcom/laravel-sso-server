@@ -19,8 +19,13 @@ class UserResource extends JsonResource
 
         $data = [
             ...$data,
-            'id' => Str::upper($this->id),
-            'avatar' => create_url_file($data['photo_name'], $data['photo_path']),
+            'id'                => Str::upper($this->id),
+            'name'              => Str::upper($this->name),
+            'nickname'          => Str::slug($this->name),
+            'avatar'            => create_url_file($data['photo_name'], $data['photo_path']),
+            'created_at_str'    => date_time_str('DD MMMM Y HH:mm', $this->created_at),
+            'updated_at_str'    => date_time_str('DD MMMM Y HH:mm', $this->updated_at),
+            'deleted_at_str'    => date_time_str('DD MMMM Y HH:mm', $this->deleted_at),
         ];
 
         return $data;

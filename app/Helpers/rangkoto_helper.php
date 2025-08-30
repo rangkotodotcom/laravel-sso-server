@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\File\File;
 use Illuminate\Http\UploadedFile;
@@ -163,5 +164,26 @@ if (!function_exists('create_url_file')) {
         $code = json_encrypt($code);
 
         return storage_url2($code);
+    }
+}
+
+if (!function_exists('date_time_str')) {
+    function date_time_str($format, $str)
+    {
+        if ($str) {
+            try {
+                $dt = Carbon::createFromFormat($format, $str);
+
+                if ($dt && $dt->format($format) === $str) {
+                    return $dt->isoFormat($format);
+                } else {
+                    return "";
+                }
+            } catch (\Exception $e) {
+                return "";
+            }
+        } else {
+            return "";
+        }
     }
 }
